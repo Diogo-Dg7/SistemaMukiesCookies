@@ -5,6 +5,7 @@ import type { Cookie } from '../../components/CookieCard';
 import { useCart } from '../../context/CartContext';
 import { api } from '../../services/api';
 import './Showcase.css';
+import './ShowcaseGrid.css';
 
 export const Showcase = () => {
   const [cookies, setCookies] = useState<Cookie[]>([]);
