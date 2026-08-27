@@ -8,6 +8,7 @@ import { ManageCookies } from './pages/Admin/ManageCookies';
 import { Login } from './pages/Admin/Login';
 import { SalesHistory } from './pages/Admin/SalesHistory';
 import { Cart } from './pages/Customer/Cart';
+import { Landing } from './pages/Customer/Landing';
 import { Showcase } from './pages/Customer/Showcase';
 import './App.css';
 
@@ -42,9 +43,10 @@ export const App: React.FC = () => (
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/admin/login" element={<Navigate to="/login" replace />} />
+          <Route path="/" element={<Landing />} />
           <Route element={<CustomerRoute />}>
             <Route element={<StoreLayout />}>
-              <Route path="/" element={<Showcase />} />
+              <Route path="/cardapio" element={<Showcase />} />
               <Route path="/cart" element={<Cart />} />
             </Route>
           </Route>
@@ -54,7 +56,7 @@ export const App: React.FC = () => (
               <Route path="/admin/sales" element={<SalesHistory />} />
             </Route>
           </Route>
-          <Route path="*" element={<Navigate to="/login" replace />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
     </CartProvider>

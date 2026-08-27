@@ -25,7 +25,7 @@ export const Login: React.FC = () => {
       const response = await api.post<{ token: string }>('/Auth/login', { username, password });
       login(response.data.token);
       const payload = JSON.parse(atob(response.data.token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))) as Record<string, unknown>;
-      navigate((payload[roleClaim] ?? payload.role) === 'Admin' ? '/admin/cookies' : '/', { replace: true });
+      navigate((payload[roleClaim] ?? payload.role) === 'Admin' ? '/admin/cookies' : '/cardapio', { replace: true });
     } catch (requestError) {
       console.error('Erro de autentica\u00e7\u00e3o:', requestError);
       setError(mode === 'register' ? 'N\u00e3o foi poss\u00edvel criar sua conta. O usu\u00e1rio pode j\u00e1 existir.' : 'Usu\u00e1rio ou senha inv\u00e1lidos.');
@@ -34,7 +34,7 @@ export const Login: React.FC = () => {
     }
   };
 
-  if (user) return <Navigate to={user.role === 'Admin' ? '/admin/cookies' : '/'} replace />;
+  if (user) return <Navigate to={user.role === 'Admin' ? '/admin/cookies' : '/cardapio'} replace />;
 
   return (
     <main className="auth-page">

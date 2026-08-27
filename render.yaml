@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: mukies-api
+    runtime: docker
+    plan: free
+    healthCheckPath: /health
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: Jwt__Key
+        generateValue: true
+      - key: Jwt__Issuer
+        value: MukiesAPI
+      - key: Jwt__Audience
+        value: MukiesFrontend
+      - key: Jwt__ExpirationMinutes
+        value: "480"
+      - key: ConnectionStrings__DefaultConnection
+        sync: false
+      - key: Cors__AllowedOrigins
+        sync: false
+      - key: InitialAdmin__Username
+        sync: false
+      - key: InitialAdmin__Password
+        sync: false

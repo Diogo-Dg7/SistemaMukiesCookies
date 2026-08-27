@@ -7,7 +7,7 @@ import './Navbar.css';
 
 const items = [
   { to: '/', label: 'In\u00edcio', icon: Home, end: true },
-  { to: '/#cardapio', label: 'Card\u00e1pio', icon: Menu },
+  { to: '/cardapio', label: 'Card\u00e1pio', icon: Menu },
   { to: '/cart', label: 'Meu pedido', icon: ShoppingBag },
   { to: '/admin/sales', label: 'Hist\u00f3rico', icon: History },
 ];

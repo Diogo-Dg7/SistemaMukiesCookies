@@ -18,11 +18,16 @@ builder.Configuration.AddEnvironmentVariables();
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
+var renderPort = Environment.GetEnvironmentVariable("PORT");
+if (!string.IsNullOrWhiteSpace(renderPort))
+    builder.WebHost.UseUrls($"http://0.0.0.0:{renderPort}");
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("ConnectionStrings:DefaultConnection deve ser configurada.");
+
 // 1. Configuração do DbContext com SQL Server
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
-        sqlOptions => sqlOptions.EnableRetryOnFailure()));
+    options.UseNpgsql(connectionString, postgresOptions => postgresOptions.EnableRetryOnFailure()));
 
 // 2. Injeção de Dependência dos Repositórios
 builder.Services.AddScoped<ICookieRepository, CookieRepository>();
@@ -98,7 +103,13 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReact", policy =>
     {
-        policy.WithOrigins("http://localhost:5173", "http://127.0.0.1:5173")
+        var origins = new[] { "http://localhost:5173", "http://127.0.0.1:5173" }
+            .Concat((builder.Configuration["Cors:AllowedOrigins"] ?? string.Empty)
+                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+
+        policy.WithOrigins(origins)
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
@@ -108,6 +119,8 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await dbContext.Database.MigrateAsync();
     await InitialAdminInitializer.InitializeAsync(scope.ServiceProvider, app.Configuration);
 }
 

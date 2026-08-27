@@ -76,10 +76,10 @@ VITE_ADMIN_WHATSAPP=5511999999999
 Copy-Item backend/Mukies.API/.env.example backend/Mukies.API/.env
 ```
 
-Edite `backend/Mukies.API/.env` com a sua instancia do SQL Server e uma chave JWT exclusiva:
+Edite `backend/Mukies.API/.env` com o seu PostgreSQL local e uma chave JWT exclusiva:
 
 ```env
-ConnectionStrings__DefaultConnection=Server=.\SQLEXPRESS;Database=MukiesDb;Trusted_Connection=True;Encrypt=False;TrustServerCertificate=True;
+ConnectionStrings__DefaultConnection=Host=localhost;Port=5432;Database=mukiesdb;Username=postgres;Password=sua-senha;SSL Mode=Disable
 
 Jwt__Key=UseUmaChaveJWTUnicaComNoMinimo32Bytes
 Jwt__Issuer=MukiesAPI
@@ -91,7 +91,7 @@ InitialAdmin__Username=admin
 InitialAdmin__Password=uma-senha-forte-com-12-ou-mais-caracteres
 ```
 
-> `Encrypt=False` e recomendado somente para desenvolvimento local com SQL Server Express. Em producao, use uma conexao criptografada e gerenciada por segredo do ambiente.
+> `SSL Mode=Disable` e indicado apenas para PostgreSQL local. Em producao, use a conexao criptografada fornecida pelo provedor e guarde-a como segredo do ambiente.
 
 ### 3. Criar o banco de dados
 
@@ -170,3 +170,37 @@ dotnet build backend/Mukies.API/Mukies.API.csproj
 - Configure o numero de WhatsApp apenas no `frontend/.env`.
 
 Os arquivos de configuracao local, dependencias e artefatos de build ja estao protegidos pelo `.gitignore`.
+
+## Publicacao gratuita para testes
+
+O projeto esta preparado para hospedar o front-end no **Vercel** e a API com PostgreSQL no **Render**. Esta combinacao e boa para portfolio e testes; os servicos gratuitos podem entrar em repouso e o banco gratuito do Render tem prazo limitado.
+
+### 1. API e banco no Render
+
+1. Envie estas alteracoes ao GitHub.
+2. No Render, crie um **PostgreSQL** gratuito na regiao Oregon ou na regiao mais proxima disponivel.
+3. Crie um **Web Service** a partir do repositorio e escolha `Docker`. O arquivo `render.yaml` e o `Dockerfile` ja descrevem a API.
+4. Em **Environment**, informe os valores marcados como `sync: false` no `render.yaml`:
+
+```text
+ConnectionStrings__DefaultConnection=<internal database URL ou string do PostgreSQL fornecida pelo Render>
+Cors__AllowedOrigins=https://seu-projeto.vercel.app
+InitialAdmin__Username=<seu-usuario-admin>
+InitialAdmin__Password=<uma-senha-forte>
+```
+
+O Render gera a chave JWT automaticamente. Depois do deploy, confirme `https://sua-api.onrender.com/health`. A primeira chamada apos um periodo sem uso pode demorar mais no plano gratuito.
+
+### 2. Front-end no Vercel
+
+1. Importe o mesmo repositorio no Vercel.
+2. Defina `frontend` como **Root Directory**.
+3. Use `npm run build` como Build Command e `dist` como Output Directory.
+4. Cadastre a variavel de ambiente:
+
+```env
+VITE_API_URL=https://sua-api.onrender.com/api
+VITE_ADMIN_WHATSAPP=5511999999999
+```
+
+Depois, volte ao Render e inclua a URL final do Vercel em `Cors__AllowedOrigins`. Para um dominio proprio, conecte-o primeiro ao Vercel e troque essa origem pela URL do dominio.
