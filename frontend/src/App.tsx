@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter, Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
@@ -10,9 +10,20 @@ import { SalesHistory } from './pages/Admin/SalesHistory';
 import { Cart } from './pages/Customer/Cart';
 import { Landing } from './pages/Customer/Landing';
 import { Showcase } from './pages/Customer/Showcase';
+import { trackPageView } from './services/analytics';
 import './App.css';
 
 const LoadingScreen = () => <div className="app-loading">{'Carregando sua experi\u00eancia Mukies...'}</div>;
+
+const AnalyticsTracker = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    trackPageView(`${location.pathname}${location.search}`);
+  }, [location.pathname, location.search]);
+
+  return null;
+};
 
 const CustomerRoute = () => {
   const { isAuthenticated, loading } = useAuth();
@@ -40,6 +51,7 @@ export const App: React.FC = () => (
   <AuthProvider>
     <CartProvider>
       <BrowserRouter>
+        <AnalyticsTracker />
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/admin/login" element={<Navigate to="/login" replace />} />
