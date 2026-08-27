@@ -19,6 +19,9 @@ WORKDIR /app
 COPY --from=build /app/publish .
 
 ENV ASPNETCORE_URLS=http://0.0.0.0:10000
+# Em containers de producao nao e necessario observar alteracoes em appsettings.
+# Isso evita consumir instancias inotify limitadas no plano gratuito do Render.
+ENV DOTNET_HOSTBUILDER__RELOADCONFIGONCHANGE=false
 EXPOSE 10000
 
 ENTRYPOINT ["dotnet", "Mukies.API.dll"]
