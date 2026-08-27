@@ -10,6 +10,7 @@ using Mukies.Infrastructure.Data;
 using Mukies.Infrastructure.Repositories;
 using Mukies.Services.Interfaces;
 using Mukies.Services.Services;
+using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 var dotenvValues = LoadDotEnv(Path.Combine(builder.Environment.ContentRootPath, ".env"));
@@ -23,7 +24,9 @@ if (!string.IsNullOrWhiteSpace(renderPort))
     builder.WebHost.UseUrls($"http://0.0.0.0:{renderPort}");
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? builder.Configuration["DATABASE_URL"]
     ?? throw new InvalidOperationException("ConnectionStrings:DefaultConnection deve ser configurada.");
+connectionString = NormalizePostgreSqlConnectionString(connectionString);
 
 // 1. Configuração do DbContext com SQL Server
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -171,4 +174,27 @@ static Dictionary<string, string?> LoadDotEnv(string path)
     }
 
     return values;
+}
+
+static string NormalizePostgreSqlConnectionString(string value)
+{
+    if (!Uri.TryCreate(value, UriKind.Absolute, out var uri) ||
+        (uri.Scheme != "postgres" && uri.Scheme != "postgresql"))
+    {
+        return value;
+    }
+
+    var userInfo = uri.UserInfo.Split(':', 2);
+    var builder = new NpgsqlConnectionStringBuilder
+    {
+        Host = uri.Host,
+        Port = uri.IsDefaultPort ? 5432 : uri.Port,
+        Database = uri.AbsolutePath.Trim('/'),
+        Username = Uri.UnescapeDataString(userInfo[0]),
+        Password = userInfo.Length > 1 ? Uri.UnescapeDataString(userInfo[1]) : string.Empty,
+        SslMode = SslMode.Require,
+        TrustServerCertificate = true
+    };
+
+    return builder.ConnectionString;
 }
