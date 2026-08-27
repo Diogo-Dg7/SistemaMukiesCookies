@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Mukies.API/Mukies.API.csproj" />
+  <Project Path="Mukies.Domain/Mukies.Domain.csproj" />
+  <Project Path="Mukies.Infrastructure/Mukies.Infrastructure.csproj" />
+  <Project Path="Mukies.Services/Mukies.Services.csproj" />
+</Solution>

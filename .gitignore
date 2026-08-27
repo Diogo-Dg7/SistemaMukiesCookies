@@ -1,0 +1,21 @@
+# Arquivos sensiveis de configuracao local
+.env
+.env.*
+!.env.example
+
+# Front-end
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# .NET
+**/bin/
+**/obj/
+.vs/
+
+# Logs e arquivos locais
+*.log
+*.user
+*.suo
+.DS_Store
+Thumbs.db

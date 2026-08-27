@@ -1,0 +1,6 @@
+@Mukies.API_HostAddress = http://localhost:5080
+
+GET {{Mukies.API_HostAddress}}/health
+Accept: application/json
+
+###
