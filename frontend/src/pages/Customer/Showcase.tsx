@@ -1,13 +1,19 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Search } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { CookieCard } from '../../components/CookieCard';
 import type { Cookie } from '../../components/CookieCard';
 import { useCart } from '../../context/CartContext';
 import { api } from '../../services/api';
 import './Showcase.css';
 import './ShowcaseGrid.css';
+import './ShowcaseGuest.css';
 
-export const Showcase = () => {
+interface ShowcaseProps {
+  isGuest?: boolean;
+}
+
+export const Showcase = ({ isGuest = false }: ShowcaseProps) => {
   const [cookies, setCookies] = useState<Cookie[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -50,6 +56,13 @@ export const Showcase = () => {
           </label>
         </div>
 
+        {isGuest && (
+          <div className="showcase-guest__notice">
+            <span>Você está vendo o cardápio como convidado.</span>
+            <Link to="/login">Entrar para fazer um pedido</Link>
+          </div>
+        )}
+
         {loading && <div className="showcase__state">{'A cozinha est\u00e1 preparando a vitrine...'}</div>}
         {error && <div className="showcase__state showcase__state--error">{error}</div>}
         {!loading && !error && visibleCookies.length === 0 && (
@@ -61,7 +74,7 @@ export const Showcase = () => {
         )}
         {!loading && !error && visibleCookies.length > 0 && (
           <div className="showcase__grid">
-            {visibleCookies.map((cookie) => <CookieCard key={cookie.id} cookie={cookie} onAddToCart={addToCart} />)}
+            {visibleCookies.map((cookie) => <CookieCard key={cookie.id} cookie={cookie} onAddToCart={isGuest ? undefined : addToCart} />)}
           </div>
         )}
       </div>

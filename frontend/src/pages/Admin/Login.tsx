@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Cookie, LockKeyhole, UserRound } from 'lucide-react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Cookie, Eye, LockKeyhole, UserRound } from 'lucide-react';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../services/api';
 import './Login.css';
+import './LoginGuest.css';
 
 const roleClaim = 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role';
 
@@ -55,6 +56,7 @@ export const Login: React.FC = () => {
           <label><span><LockKeyhole size={16} /> Senha</span><input type="password" value={password} onChange={(event) => setPassword(event.target.value)} minLength={mode === 'register' ? 6 : undefined} autoComplete={mode === 'login' ? 'current-password' : 'new-password'} placeholder="Sua senha" required /></label>
           <button className="auth-card__submit" disabled={loading} type="submit"><Cookie size={18} />{loading ? 'Aguarde...' : mode === 'login' ? 'Entrar no card\u00e1pio' : 'Criar conta e entrar'}</button>
         </form>
+        <div className="auth-card__guest"><Eye size={16} /><Link to="/cardapio/convidado">Ver cardápio como convidado</Link></div>
       </section>
     </main>
   );

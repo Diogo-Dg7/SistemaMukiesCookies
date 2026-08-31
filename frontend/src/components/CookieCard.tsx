@@ -34,12 +34,11 @@ export const CookieCard: React.FC<CookieCardProps> = ({ cookie, onAddToCart }) =
         <p style={styles.description}>{cookie.description}</p>
         <div style={styles.footer}>
           <span style={styles.price}>{formatPrice(cookie.price)}</span>
-          <button
-            style={styles.button}
-            onClick={() => onAddToCart && onAddToCart(cookie)}
-          >
-            +
-          </button>
+          {onAddToCart && (
+            <button style={styles.button} onClick={() => onAddToCart(cookie)} aria-label={`Adicionar ${cookie.name} ao carrinho`}>
+              +
+            </button>
+          )}
         </div>
       </div>
     </div>

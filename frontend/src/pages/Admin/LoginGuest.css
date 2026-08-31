@@ -1,0 +1,17 @@
+.auth-card__guest {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 17px;
+  color: #875745;
+  font: 700 13px system-ui;
+}
+
+.auth-card__guest a {
+  color: #7d3d2a;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.auth-card__guest a:hover { text-decoration: underline; }

@@ -56,6 +56,7 @@ export const App: React.FC = () => (
           <Route path="/login" element={<Login />} />
           <Route path="/admin/login" element={<Navigate to="/login" replace />} />
           <Route path="/" element={<Landing />} />
+          <Route path="/cardapio/convidado" element={<Showcase isGuest />} />
           <Route element={<CustomerRoute />}>
             <Route element={<StoreLayout />}>
               <Route path="/cardapio" element={<Showcase />} />
