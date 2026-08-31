@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Search } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { CookieCard } from '../../components/CookieCard';
 import type { Cookie } from '../../components/CookieCard';
@@ -18,7 +18,13 @@ export const Showcase = ({ isGuest = false }: ShowcaseProps) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
+  const [guestPrompt, setGuestPrompt] = useState<Cookie | null>(null);
   const { addToCart } = useCart();
+
+  const handleGuestAdd = (cookie: Cookie) => {
+    addToCart(cookie);
+    setGuestPrompt(cookie);
+  };
 
   useEffect(() => {
     async function loadCookies() {
@@ -74,10 +80,22 @@ export const Showcase = ({ isGuest = false }: ShowcaseProps) => {
         )}
         {!loading && !error && visibleCookies.length > 0 && (
           <div className="showcase__grid">
-            {visibleCookies.map((cookie) => <CookieCard key={cookie.id} cookie={cookie} onAddToCart={isGuest ? undefined : addToCart} />)}
+            {visibleCookies.map((cookie) => <CookieCard key={cookie.id} cookie={cookie} onAddToCart={isGuest ? handleGuestAdd : addToCart} />)}
           </div>
         )}
       </div>
+      {guestPrompt && (
+        <div className="showcase-guest__overlay" role="dialog" aria-modal="true" aria-labelledby="guest-checkout-title">
+          <div className="showcase-guest__dialog">
+            <button className="showcase-guest__close" onClick={() => setGuestPrompt(null)} aria-label="Continuar vendo o cardápio"><X size={19} /></button>
+            <span>{String.fromCodePoint(0x1f36a)}</span>
+            <h3 id="guest-checkout-title">{guestPrompt.name} foi para o carrinho!</h3>
+            <p>Entre ou crie sua conta para conferir o carrinho e finalizar seu pedido.</p>
+            <Link to="/login" className="showcase-guest__login">Entrar ou criar conta</Link>
+            <button className="showcase-guest__continue" onClick={() => setGuestPrompt(null)}>Continuar como convidado</button>
+          </div>
+        </div>
+      )}
     </section>
   );
 };

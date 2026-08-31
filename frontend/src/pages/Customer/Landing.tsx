@@ -16,7 +16,7 @@ export const Landing = () => (
         <p className="landing__eyebrow"><Sparkles size={14} /> FORNADAS ARTESANAIS</p>
         <h1>Um carinho em forma de <em>cookie.</em></h1>
         <p>Cookies artesanais, recheios generosos e aquele cheirinho que deixa qualquer dia mais gostoso.</p>
-        <div className="landing__actions"><Link to="/login" className="landing__primary"><Cookie size={19} /> Ver cardápio <ArrowRight size={18} /></Link>{whatsapp && <a className="landing__secondary" href={`https://wa.me/${whatsapp}`} target="_blank" rel="noreferrer"><MessageCircle size={18} /> Falar no WhatsApp</a>}</div>
+        <div className="landing__actions"><Link to="/cardapio/convidado" className="landing__primary"><Cookie size={19} /> Ver cardápio <ArrowRight size={18} /></Link>{whatsapp && <a className="landing__secondary" href={`https://wa.me/${whatsapp}`} target="_blank" rel="noreferrer"><MessageCircle size={18} /> Falar no WhatsApp</a>}</div>
       </div>
       <div className="landing__cookie-art" aria-hidden="true"><span>{String.fromCodePoint(0x1f36a)}</span><i></i><b></b><strong></strong></div>
     </section>
